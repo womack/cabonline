@@ -1,0 +1,21 @@
+.mapForm {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    flex-direction: column;
+    min-height: 230px;
+}
+
+.mapForm>h1 {
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.mapForm>.inputs {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
