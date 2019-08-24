@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Map from "./components/Map";
 import MapForm from "./components/MapForm";
+import ToggleThemeButton from "./components/ToggleThemeButton";
+
 
 import AddressInterface from "./interfaces/Address.interface";
 import VehicleInterface from "./interfaces/Vehicle.interface";
+
+import { ThemeContext, themes } from "./context/ThemeContext";
 
 import { getVehicles } from "./util/api";
 
@@ -16,6 +20,11 @@ const App = () => {
   const [currentAddress, setCurrentAddress] = useState({} as AddressInterface);
   const [currentVehicles, setCurrentVehicles] = useState([] as VehicleInterface[]);
   const [currentlyPolling, setCurrentlyPolling] = useState(false);
+  const [currentTheme, setCurrentTheme] = useState(themes.dark);
+
+
+  const themeContext = useContext(ThemeContext);
+  themeContext.toggleTheme = () => setCurrentTheme(currentTheme === themes.dark ? themes.light : themes.dark);
 
   const pollVehicles = () => {
     setTimeout(() => {
@@ -41,12 +50,15 @@ const App = () => {
   useEffect(pollVehicles, []);
 
   return (
-    <div className="App" >
-      <div className="mapContainer">
-        <h1>CABONLINE HIGH TECH ADDRESS SEARCH</h1>
-        <MapForm selectedAddress={currentAddress} updateSelectedAddress={updateAddress} />
-        <Map selectedAddress={currentAddress} vehicleList={currentVehicles} />
-      </div>
+    <div className="App" style={{ backgroundImage: currentTheme }} >
+      <ThemeContext.Provider value={themeContext}>
+        <ToggleThemeButton />
+        <div className="mapContainer">
+          <h1>CABONLINE HIGH TECH ADDRESS SEARCH</h1>
+          <MapForm selectedAddress={currentAddress} updateSelectedAddress={updateAddress} />
+          <Map selectedAddress={currentAddress} vehicleList={currentVehicles} />
+        </div>
+      </ThemeContext.Provider>
     </div>
   );
 };
