@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from "react";
 import Map from "./components/Map";
 import MapForm from "./components/MapForm";
 
@@ -7,57 +7,49 @@ import VehicleInterface from "./interfaces/Vehicle.interface";
 
 import { getVehicles } from "./util/api";
 
-import './App.css';
-
-type AppState = {
-  currentAddress: AddressInterface
-  currentVehicles: VehicleInterface[],
-  currentlyPolling: boolean
-}
+import "./App.css";
 
 const pollRate = 5000;
 
-export default class App extends Component<{}, AppState> {
+const App = () => {
 
-  state: Readonly<AppState> = {
-    currentAddress: {} as AddressInterface,
-    currentVehicles: [] as VehicleInterface[],
-    currentlyPolling: false
-  }
+  const [currentAddress, setCurrentAddress] = useState({} as AddressInterface);
+  const [currentVehicles, setCurrentVehicles] = useState([] as VehicleInterface[]);
+  const [currentlyPolling, setCurrentlyPolling] = useState(false);
 
-  pollVehicles = () => {
+  const pollVehicles = () => {
     setTimeout(() => {
-      if (this.state.currentlyPolling) {
-        getVehicles(this.state.currentAddress.latitude, this.state.currentAddress.longitude).then((response) => {
-          this.setState({ currentVehicles: response });
-        })
+      if (currentlyPolling) {
+        getVehicles(currentAddress.latitude, currentAddress.longitude).then((response) => {
+          setCurrentVehicles(response);
+        });
       }
-      this.pollVehicles();
+      pollVehicles();
     }, pollRate);
-  }
+  };
 
-  updateAddress = (address: AddressInterface | undefined) => {
+  const updateAddress = (address: AddressInterface | undefined) => {
     if (address !== undefined) {
       getVehicles(address.latitude, address.longitude).then((response) => {
-        this.setState({ currentAddress: address, currentVehicles: response, currentlyPolling: true });
-      })
+        setCurrentAddress(address);
+        setCurrentVehicles(response);
+        setCurrentlyPolling(true);
+      });
     }
-  }
+  };
 
-  componentDidMount() {
-    this.pollVehicles();
-  }
+  useEffect(pollVehicles, []);
 
-  render() {
-    return (
-      <div className="App" >
-        <div className="mapContainer">
-        <h1>Cabonline advanced address search</h1>
-          <MapForm selectedAddress={this.state.currentAddress} updateSelectedAddress={this.updateAddress} />
-          <Map selectedAddress={this.state.currentAddress} vehicleList={this.state.currentVehicles} />
-        </div>
-
+  return (
+    <div className="App" >
+      <div className="mapContainer">
+        <h1>CABONLINE HIGH TECH ADDRESS SEARCH</h1>
+        <MapForm selectedAddress={currentAddress} updateSelectedAddress={updateAddress} />
+        <Map selectedAddress={currentAddress} vehicleList={currentVehicles} />
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
+
+
+export default App;

@@ -8,9 +8,9 @@
     "rules": {
         "member-access": false,
         "ordered-imports": false,
-        "quotemark": false,
+        "quotemark": true,
         "no-console": false,
-        "semicolon": false,
+        "semicolon": true,
         "jsx-no-lambda": false
     },
     "rulesDirectory": [

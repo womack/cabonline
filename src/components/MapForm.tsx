@@ -1,54 +1,53 @@
-import React, { Component } from 'react';
+import React, { useState } from "react";
 import Address from "./Address";
 import AddressInterface from "../interfaces/Address.interface";
 
-import Dropdown from 'react-dropdown'
+import Dropdown from "react-dropdown";
 
 import { getAddresses } from "../util/api";
 
-import 'react-dropdown/style.css'
+import "react-dropdown/style.css";
 import "./css/MapForm.css";
 
-type MapFormState = {
-    searchText: string,
-    addressResults: AddressInterface[],
-}
 
-export default class MapForm extends Component<{ selectedAddress: AddressInterface, updateSelectedAddress: ((address: AddressInterface | undefined) => void) }, MapFormState> {
+const MapForm = (props: { selectedAddress: AddressInterface, updateSelectedAddress: ((address: AddressInterface | undefined) => void) }) => {
 
-    state: Readonly<MapFormState> = {
-        searchText: "",
-        addressResults: [],
-    }
+    const [searchText, setSearchText] = useState("");
+    const [addressResults, setAddressResults] = useState([] as AddressInterface[]);
 
-    handleChange = (valueName: string) => (e: any) => this.setState({ [valueName]: e.target.value } as Pick<MapFormState, any>);
+    const handleChange = (e: any) => setSearchText(e.target.value);
 
-    handleKeyDown = (e: any) => {
+    const handleKeyDown = (e: any) => {
         if (e.key === "Enter") {
-            getAddresses(this.state.searchText).then((response) => {
-                this.setState({ addressResults: response });
-            })
+            getAddresses(searchText).then((response) => {
+                props.updateSelectedAddress(response[0]);
+                setAddressResults(response);
+            });
         }
-    }
+    };
 
-    render() {
-        let addressOptions = this.state.addressResults.map((address, index: number) => {
-            const { streetName, zipCode } = address;
-            return {
-                label: `${streetName} ${zipCode}`, value: `${streetName}${zipCode}`
-            }
-        })
-        return (
-            <div className="mapForm" >
-                <div>
-                    <div className="inputs">
-                        <input type="text" placeholder="Search for an address" value={this.state.searchText} onChange={this.handleChange("searchText")} onKeyDown={this.handleKeyDown} />
-                        {/* hacky way of having an "id" to an address */}
-                        <Dropdown options={addressOptions} onChange={(option) => this.props.updateSelectedAddress(this.state.addressResults.find(address => address.streetName + address.zipCode === option.value))} value={addressOptions[0]} placeholder="Select an option" />
-                    </div>
-                    {this.state && this.props.selectedAddress ? <Address address={this.props.selectedAddress} /> : null}
+    let addressOptions = addressResults.map(({ streetName, zipCode }) => {
+        return {
+            label: `${streetName} ${zipCode}`, value: `${streetName}${zipCode}`
+        };
+    });
+
+    const currentAddress = addressOptions.find(({ label, value }) => props.selectedAddress.streetName + props.selectedAddress.zipCode === value) || addressOptions[0];
+
+    return (
+        <div className="mapForm" >
+            <div>
+                <div className="inputs">
+                    <input type="text" placeholder="Search for an address" value={searchText} onChange={handleChange} onKeyDown={handleKeyDown} />
+                    {/* hacky way of having an "id" to an address */}
+                    <Dropdown options={addressOptions} onChange={({ value }) => props.updateSelectedAddress(addressResults.find(({ streetName, zipCode }) => streetName + zipCode === value))} value={currentAddress} placeholder="Select an option" />
                 </div>
-            </div >
-        )
-    }
-}
+                {props.selectedAddress ? <Address address={props.selectedAddress} /> : null}
+            </div>
+        </div >
+    );
+};
+
+
+export default MapForm;
+

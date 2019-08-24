@@ -1,13 +1,10 @@
-import React from 'react';
+import React from "react";
 import AddressInterface from "../interfaces/Address.interface";
-import './css/Address.css';
 
-type AddressProps = {
-    address: AddressInterface
-}
+import "./css/Address.css";
 
-const Address = ({ address }: AddressProps) => {
-    const { zipCode, streetName, city, countryCode, latitude, longitude } = address;
+const Address = (props: { address: AddressInterface }) => {
+    const { zipCode, streetName, city, countryCode, latitude, longitude } = props.address;
 
     return (
         <div className="address">
@@ -19,5 +16,6 @@ const Address = ({ address }: AddressProps) => {
             <div><p>Longitude:</p><span>{longitude}</span></div>
         </div>
     );
-}
+};
+
 export default Address;
