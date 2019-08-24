@@ -51,8 +51,12 @@ export default class App extends Component<{}, AppState> {
   render() {
     return (
       <div className="App" >
-        <MapForm selectedAddress={this.state.currentAddress} updateSelectedAddress={this.updateAddress} />
-        <Map selectedAddress={this.state.currentAddress} vehicleList={this.state.currentVehicles} />
+        <div className="mapContainer">
+        <h1>Cabonline advanced address search</h1>
+          <MapForm selectedAddress={this.state.currentAddress} updateSelectedAddress={this.updateAddress} />
+          <Map selectedAddress={this.state.currentAddress} vehicleList={this.state.currentVehicles} />
+        </div>
+
       </div>
     );
   }

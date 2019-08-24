@@ -3,9 +3,10 @@ import Address from "./Address";
 import AddressInterface from "../interfaces/Address.interface";
 
 import Dropdown from 'react-dropdown'
-import 'react-dropdown/style.css'
 
-import { searchForAddress } from "../util/api";
+import { getAddresses } from "../util/api";
+
+import 'react-dropdown/style.css'
 import "./css/MapForm.css";
 
 type MapFormState = {
@@ -17,21 +18,21 @@ export default class MapForm extends Component<{ selectedAddress: AddressInterfa
 
     state: Readonly<MapFormState> = {
         searchText: "",
-        addressResults: [] as AddressInterface[],
+        addressResults: [],
     }
 
     handleChange = (valueName: string) => (e: any) => this.setState({ [valueName]: e.target.value } as Pick<MapFormState, any>);
 
     handleKeyDown = (e: any) => {
         if (e.key === "Enter") {
-            searchForAddress(this.state.searchText).then((response: AddressInterface[]) => {
+            getAddresses(this.state.searchText).then((response) => {
                 this.setState({ addressResults: response });
             })
         }
     }
 
     render() {
-        let addressOptions = this.state.addressResults.map((address: AddressInterface, index: number) => {
+        let addressOptions = this.state.addressResults.map((address, index: number) => {
             const { streetName, zipCode } = address;
             return {
                 label: `${streetName} ${zipCode}`, value: `${streetName}${zipCode}`
@@ -39,12 +40,14 @@ export default class MapForm extends Component<{ selectedAddress: AddressInterfa
         })
         return (
             <div className="mapForm" >
-                <h1>Search for an address</h1>
-                <div className="inputs">
-                    <input type="text" value={this.state.searchText} onChange={this.handleChange("searchText")} onKeyDown={this.handleKeyDown} />
-                    <Dropdown options={addressOptions} onChange={(option) => this.props.updateSelectedAddress(this.state.addressResults.find(address => address.streetName + address.zipCode === option.value))} value={addressOptions[0]} placeholder="Select an option" />
+                <div>
+                    <div className="inputs">
+                        <input type="text" placeholder="Search for an address" value={this.state.searchText} onChange={this.handleChange("searchText")} onKeyDown={this.handleKeyDown} />
+                        {/* hacky way of having an "id" to an address */}
+                        <Dropdown options={addressOptions} onChange={(option) => this.props.updateSelectedAddress(this.state.addressResults.find(address => address.streetName + address.zipCode === option.value))} value={addressOptions[0]} placeholder="Select an option" />
+                    </div>
+                    {this.state && this.props.selectedAddress ? <Address address={this.props.selectedAddress} /> : null}
                 </div>
-                {this.state && this.props.selectedAddress ? <Address address={this.props.selectedAddress} /> : null}
             </div >
         )
     }

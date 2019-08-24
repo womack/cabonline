@@ -4,9 +4,25 @@
   width: 100%;
   height:100%;
   font-family: "Open Sans", sans-serif;
+  background-image: radial-gradient(circle at 0% 0%, #373b52, #252736 51%, #1d1e26);
 
+}
+
+.mapContainer {
+  height: 100%;
+  width: 60%;
+  flex-direction: column;
+}
+
+.App, .mapContainer {
   display:flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
+}
+
+.mapContainer>h1 {
+  font-size: 24px;
+  font-weight: 800;
+  color: white;
+  margin: 10px;
 }

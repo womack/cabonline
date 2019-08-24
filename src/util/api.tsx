@@ -1,23 +1,18 @@
 import AddressInterface from "../interfaces/Address.interface";
 import VehicleInterface from "../interfaces/Vehicle.interface";
 
-
 const apiUrl = "https://cabonline-frontend-test.herokuapp.com"
 
+const getAddresses = (address: string) => get<AddressInterface[]>(`addresses?q=${address}`);
+const getVehicles = (lat: number, lng: number) => get<VehicleInterface[]>(`vehicles?lat=${lat}&lng=${lng}`);
 
-const searchForAddress = (address: string) => {
-    return new Promise<AddressInterface[]>((resolve, reject) => {
-        fetch(`${apiUrl}/addresses?q=${address}`).then(response => response.json()).then(resolve).catch(reject);
-    });
-}
-
-const getVehicles = (lat: number, lng: number) => {
-    return new Promise<VehicleInterface[]>((resolve, reject) => {
-        fetch(`${apiUrl}/vehicles?lat=${lat}&lng=${lng}`).then(response => response.json()).then(resolve).catch(reject);
+function get<T>(endpoint: string) {
+    return new Promise<T>((resolve, reject) => {
+        fetch(`${apiUrl}/${endpoint}`).then(response => response.json()).then(resolve).catch(reject);
     });
 }
 
 export {
-    searchForAddress,
+    getAddresses,
     getVehicles
 };
