@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import Map from "./components/Map";
 import MapForm from "./components/MapForm";
-import ToggleThemeButton from "./components/ToggleThemeButton";
 
+import ToggleThemeButton from "./components/ToggleThemeButton";
 
 import AddressInterface from "./interfaces/Address.interface";
 import VehicleInterface from "./interfaces/Vehicle.interface";
@@ -17,11 +17,10 @@ const pollRate = 5000;
 
 const App = () => {
 
-  const [currentAddress, setCurrentAddress] = useState({} as AddressInterface);
+  const [currentAddress, setCurrentAddress] = useState<AddressInterface>({} as AddressInterface);
   const [currentVehicles, setCurrentVehicles] = useState([] as VehicleInterface[]);
   const [currentlyPolling, setCurrentlyPolling] = useState(false);
   const [currentTheme, setCurrentTheme] = useState(themes.dark);
-
 
   const themeContext = useContext(ThemeContext);
   themeContext.toggleTheme = () => setCurrentTheme(currentTheme === themes.dark ? themes.light : themes.dark);
@@ -50,11 +49,11 @@ const App = () => {
   useEffect(pollVehicles, []);
 
   return (
-    <div className="App" style={{ backgroundImage: currentTheme }} >
-      <ThemeContext.Provider value={themeContext}>
+    <div className="App" style={{ backgroundImage: currentTheme.primary }}>
+      <ThemeContext.Provider value={{ theme: currentTheme, toggleTheme: themeContext.toggleTheme }}>
         <ToggleThemeButton />
         <div className="mapContainer">
-          <h1>CABONLINE HIGH TECH ADDRESS SEARCH</h1>
+          <h1 style={{ color: currentTheme.secondary }}>CABONLINE HIGH TECH ADDRESS SEARCH</h1>
           <MapForm selectedAddress={currentAddress} updateSelectedAddress={updateAddress} />
           <Map selectedAddress={currentAddress} vehicleList={currentVehicles} />
         </div>

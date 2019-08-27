@@ -11,10 +11,10 @@ const ToggleThemeButton = () => {
     const themeContext = useContext(ThemeContext);
     return (
         <div className="toggle">
-            <label htmlFor="toggleButton">
+            <label htmlFor="toggleButton" style={{ color: themeContext.theme.secondary }}>
                 <Toggle
-                    leftBackgroundColor="grey"
-                    rightBackgroundColor="red"
+                    leftBackgroundColor="#252736"
+                    rightBackgroundColor="grey"
                     borderColor="black"
                     knobColor="white"
                     name="toggleButton"
