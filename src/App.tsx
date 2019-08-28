@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import Map from "./components/Map";
 import MapForm from "./components/MapForm";
 
@@ -22,13 +22,17 @@ const App = () => {
   const [currentlyPolling, setCurrentlyPolling] = useState(false);
   const [currentTheme, setCurrentTheme] = useState(themes.dark);
 
+  const refPolling = useRef(currentlyPolling);
+  const refAddress = useRef(currentAddress);
+
   const themeContext = useContext(ThemeContext);
   themeContext.toggleTheme = () => setCurrentTheme(currentTheme === themes.dark ? themes.light : themes.dark);
 
   const pollVehicles = () => {
     setTimeout(() => {
-      if (currentlyPolling) {
-        getVehicles(currentAddress.latitude, currentAddress.longitude).then((response) => {
+      console.log(refPolling.current)
+      if (refPolling.current) {
+        getVehicles(refAddress.current.latitude, refAddress.current.longitude).then((response) => {
           setCurrentVehicles(response);
         });
       }
@@ -38,6 +42,7 @@ const App = () => {
 
   const updateAddress = (address: AddressInterface | undefined) => {
     if (address !== undefined) {
+      console.log("here");
       getVehicles(address.latitude, address.longitude).then((response) => {
         setCurrentAddress(address);
         setCurrentVehicles(response);
@@ -45,6 +50,11 @@ const App = () => {
       });
     }
   };
+
+  useEffect(() => {
+    refPolling.current = currentlyPolling;
+    refAddress.current = currentAddress;
+  }, [currentAddress, currentlyPolling]);
 
   useEffect(pollVehicles, []);
 

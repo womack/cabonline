@@ -30,7 +30,7 @@ const Map = (props: { selectedAddress: AddressInterface, vehicleList: VehicleInt
     return (
         <div className="map" id="map" style={{ borderColor: themeContext.theme.secondary }}>
             <GoogleMapReact
-                bootstrapURLKeys={{ key: "AIzaSyBEeJ7NUKPr2Bd0iVskbJOTpeSEBb0EWqw" }}
+                bootstrapURLKeys={{ key: "AIzaSyB-DR3vA_VIcyUguIEPeWKD1HA5ZdpgRT8" }}
                 zoom={zoom}
                 center={{ lng, lat }}
             >
